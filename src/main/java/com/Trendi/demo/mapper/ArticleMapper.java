@@ -6,6 +6,6 @@ import com.Trendi.demo.entity.Article;
 public class ArticleMapper {
 
     public static ArticleResponse toResponse(Article a){
-        return ArticleResponse.builder()
+
     }
 }
