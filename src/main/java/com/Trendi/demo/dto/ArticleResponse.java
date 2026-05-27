@@ -3,6 +3,8 @@ package com.Trendi.demo.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 
 @Builder
 @Data
@@ -11,4 +13,5 @@ public class ArticleResponse {
     private String title;
     private String content;
     private String authorName;
+    private LocalDateTime createdAt;
 }

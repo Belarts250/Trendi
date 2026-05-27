@@ -1,12 +1,14 @@
 package com.Trendi.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
+@Data
 @Table(name = "articles")
 public class Article {
 
