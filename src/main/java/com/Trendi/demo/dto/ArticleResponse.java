@@ -6,5 +6,6 @@ import lombok.Data;
 @Builder
 @Data
 public class ArticleResponse {
-
+    private Long id;
+    private String title;
 }
