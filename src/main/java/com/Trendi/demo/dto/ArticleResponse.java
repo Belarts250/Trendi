@@ -10,4 +10,5 @@ public class ArticleResponse {
     private Long id;
     private String title;
     private String content;
+    private String authorName;
 }
