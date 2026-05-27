@@ -1,7 +1,10 @@
 package com.Trendi.demo.dto;
 
 import lombok.Builder;
+import lombok.Data;
 
 @Builder
+@Data
 public class ArticleResponse {
+
 }
