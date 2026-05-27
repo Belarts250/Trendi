@@ -8,6 +8,6 @@ import lombok.Builder;
 @Builder
 public class ArticleMapper {
  public static ArticleResponse toResponse(Article a){
-    return ArticleResponse.builder().id(a.getId()).title(a.getId())
- }
+    return ArticleResponse.builder().id(a.getId()).title(a.getId()).content(a.getContent())
+            .authorName(a.getAuthor().getName()); }
 }
