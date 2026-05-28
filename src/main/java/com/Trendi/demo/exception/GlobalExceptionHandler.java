@@ -24,5 +24,12 @@ public class GlobalExceptionHandler extends RuntimeException{
         return new ResponseEntity<>( error, HttpStatus.NOT_FOUND);
     }
 
+    public ResponseEntity<?> handleGeneral(Exception e){
+        Map<String, Object> err = new HashMap<>();
+
+        err.put("timestamp", LocalDateTime.now());
+        err.put("status", 500);
+
+    }
 
 }
