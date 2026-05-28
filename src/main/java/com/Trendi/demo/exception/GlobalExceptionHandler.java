@@ -2,6 +2,8 @@ package com.Trendi.demo.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -24,6 +26,24 @@ public class GlobalExceptionHandler extends RuntimeException{
         return new ResponseEntity<>( error, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public  ResponseEntity<?> handleValidation(MethodArgumentNotValidException ex){
+        Map<String, Object> errors = new HashMap<>();
+
+        ex.getBindingResult().getAllErrors().forEach(
+                error -> {
+                    String fieldName = ((FieldError) error).getField();
+
+                    String errorMessage = error.getDefaultMessage();
+
+                    errors.put(fieldName, errorMessage);
+                }
+        );
+
+        return new ResponseEntity<>( errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGeneral(Exception e){
         Map<String, Object> err = new HashMap<>();
 
@@ -32,7 +52,7 @@ public class GlobalExceptionHandler extends RuntimeException{
         err.put("error", "Internal Server Error");
         err.put("message", e.getMessage());
 
-        return  new ResponseEntity<>(err, HttpStatus.)
+        return  new ResponseEntity<>(err, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }
