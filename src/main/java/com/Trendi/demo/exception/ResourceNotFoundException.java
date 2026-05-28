@@ -1,5 +1,4 @@
 package com.Trendi.demo.exception;
 
-public class ResourceNotFoundException extends RuntimeException {
-
+public class ResourceNotFoundException {
 }
