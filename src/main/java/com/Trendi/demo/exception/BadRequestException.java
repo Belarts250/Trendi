@@ -1,4 +1,4 @@
 package com.Trendi.demo.exception;
 
-public class BadRequestExcepion {
+public class BadRequestException {
 }
