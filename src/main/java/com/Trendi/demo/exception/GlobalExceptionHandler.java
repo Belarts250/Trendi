@@ -29,7 +29,10 @@ public class GlobalExceptionHandler extends RuntimeException{
 
         err.put("timestamp", LocalDateTime.now());
         err.put("status", 500);
+        err.put("error", "Internal Server Error");
+        err.put("message", e.getMessage());
 
+        return  new ResponseEntity<>(err, HttpStatus.)
     }
 
 }
