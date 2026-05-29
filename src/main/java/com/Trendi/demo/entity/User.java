@@ -32,7 +32,7 @@ public class User {
 
     private String password;
 
-//    private LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
 
     @OneToMany(mappedBy = "author", cascade = ALL, fetch = LAZY)
