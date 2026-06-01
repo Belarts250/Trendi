@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/blogdb
+    url: jdbc:postgresql://localhost:5432/trendi
     username: postgres
-    password: secret
+    password: 123
 
   jpa:
     hibernate:
