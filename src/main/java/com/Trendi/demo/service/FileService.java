@@ -49,5 +49,9 @@ public class FileService {
         }
     }
 
+    public  Path loadFile(String filename){
+        return uploadDir.resolve(filename).normalize();
+    }
+
 
 }
