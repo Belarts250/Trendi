@@ -27,6 +27,10 @@ public class FileService {
         if(file.isEmpty()){
             return null;
         }
+
+        String originalFile  = file.getOriginalFilename();
+
     }
+
 
 }
