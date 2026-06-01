@@ -45,7 +45,7 @@ public class FileService {
             Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
             return "uploads/" + uniqueFilename;
         } catch (IOException e){
-            throw new RuntimeException("Failed to save file:"+  originalFilename, e);
+            throw new RuntimeException("Failed to save files :"+  originalFilename, e);
         }
     }
 
