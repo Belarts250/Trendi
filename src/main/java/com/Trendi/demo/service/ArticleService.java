@@ -80,5 +80,9 @@ public class ArticleService {
         articleRepository.delete(article);
     }
 
-    public List<ArticleResponse> getArticlesBy
+    public List<ArticleResponse> getArticlesByUser(Long userId){
+        return articleRepository.findByAuthorId(userId)
+                .stream()
+                .map(ArticleMapper::toResponse)
+                .collect(Collectors.toList());    }
 }
