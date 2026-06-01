@@ -11,6 +11,9 @@ import com.Trendi.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class ArticleService {
 
@@ -34,5 +37,18 @@ public class ArticleService {
         Article saved = articleRepository.save(article);
 
         return ArticleMapper.toResponse(saved);
+    }
+
+    public List<ArticleResponse> getAllArticles(){
+        return articleRepository.findAll()
+                .stream()
+                .map(ArticleMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    public ArticleResponse getArticleById(Long id){
+        Article article = articleRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Article not find with id" + id));
+        return ArticleMapper.toResponse(article);
     }
 }
