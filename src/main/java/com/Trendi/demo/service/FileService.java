@@ -1,11 +1,25 @@
 package com.Trendi.demo.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 public class FileService {
     private final Path uploadDir;
+
+    public FileService(@Value("${file.upload-dir}") String uploadDirPath){
+        this.uploadDir = Paths.get(uploadDirPath).toAbsolutePath().normalize();
+
+        try{
+            Files.createDirectories(this.uploadDir);
+        }catch(IOException e){
+            throw new RuntimeException("Could not create upload directory", e);
+        }
+    }
 
 }
