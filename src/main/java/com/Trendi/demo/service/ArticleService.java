@@ -67,4 +67,18 @@ public class ArticleService {
 
         return ArticleMapper.toResponse(updated);
     }
+
+
+    public void deleteArticle(Long articleId, ArticleRequest request, Long userId){
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Article not found" + articleId));
+
+        if(!article.getAuthor().getId().equals(userId)){
+            throw new BadRequestException("You can delete only your articles");
+        }
+
+        articleRepository.delete(article);
+    }
+
+    public List<ArticleResponse> getArticlesBy
 }
