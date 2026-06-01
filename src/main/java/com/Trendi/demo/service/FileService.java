@@ -38,11 +38,14 @@ public class FileService {
             extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         }
 
-        String uniqueFIlename = UUID.randomUUID().toString() + extension;
+        String uniqueFilename = UUID.randomUUID().toString() + extension;
 
         try {
-            Path targetPath = uploadDir.resolve(uniqueFIlename);
+            Path targetPath = uploadDir.resolve(uniqueFilename);
             Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+            return "uploads/" + uniqueFilename;
+        } catch (IOException e){
+            throw new RuntimeException("Failed to save file:",  originalFilename, e);
         }
     }
 
