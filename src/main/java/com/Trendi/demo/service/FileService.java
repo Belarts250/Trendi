@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 
 @Service
 public class FileService {
@@ -34,6 +36,13 @@ public class FileService {
 
         if(originalFilename != null && originalFilename.contains(".")){
             extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        }
+
+        String uniqueFIlename = UUID.randomUUID().toString() + extension;
+
+        try {
+            Path targetPath = uploadDir.resolve(uniqueFIlename);
+            Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
         }
     }
 
