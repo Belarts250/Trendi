@@ -2,6 +2,7 @@ package com.Trendi.demo.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,6 +20,12 @@ public class FileService {
             Files.createDirectories(this.uploadDir);
         }catch(IOException e){
             throw new RuntimeException("Could not create upload directory", e);
+        }
+    }
+
+    public String saveFile(MultipartFile file){
+        if(file.isEmpty()){
+            return null;
         }
     }
 
