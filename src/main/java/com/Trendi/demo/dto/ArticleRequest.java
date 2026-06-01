@@ -18,4 +18,9 @@ public class ArticleRequest {
 
     @NotBlank(message = "content is required")
     private String content;
+
+//    @NotBlank(message = "Author name is required")
+//    private String author;
+
+//    private  String imagePath;
 }
