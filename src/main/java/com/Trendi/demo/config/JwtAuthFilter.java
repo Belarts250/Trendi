@@ -41,7 +41,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         // Step 3: Extract the token (remove "Bearer " prefix)
-        String token = authHeader.substring(7);
+        String token = authHeader.substring(7).trim();
 
         // Step 4: Extract email from token
         String email = jwtUtil.getEmailFromToken(token);

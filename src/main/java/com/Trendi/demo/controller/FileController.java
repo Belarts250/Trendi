@@ -27,7 +27,7 @@ public class FileController {
 
             if(resource.exists() && resource.isReadable()){
                 return ResponseEntity.ok()
-                        .contentType(MediaType.ALL)
+                        .contentType(MediaType.IMAGE_PNG)
                         .body(resource);
             }else{
                 return ResponseEntity.notFound().build();

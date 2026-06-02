@@ -11,6 +11,7 @@ import com.Trendi.demo.repository.ArticleRepository;
 import com.Trendi.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +24,9 @@ public class ArticleService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private FileService fileService;
 
     public ArticleResponse createArticle(ArticleRequest request, Long userId, String imagePath){
         User author = userRepository.findById(userId)
@@ -53,7 +57,8 @@ public class ArticleService {
         return ArticleMapper.toResponse(article);
     }
 
-    public ArticleResponse updateArticle(Long articleId, ArticleRequest request, Long userId){
+
+    public ArticleResponse updateArticle(Long articleId, ArticleRequest request, Long userId, String newImage){
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(()-> new ResourceNotFoundException("Article not found" + articleId));
 
@@ -63,6 +68,14 @@ public class ArticleService {
 
         article.setTitle(request.getTitle());
         article.setContent(request.getContent());
+
+        if (newImage != null) {
+            // Delete old image if it exists
+            if (article.getImagePath() != null) {
+                fileService.deleteFile(article.getImagePath()); // implement this in FileService
+            }
+            article.setImagePath(newImage);
+        }
         Article updated = articleRepository.save(article);
 
         return ArticleMapper.toResponse(updated);

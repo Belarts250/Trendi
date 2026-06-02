@@ -15,43 +15,50 @@ import java.util.UUID;
 public class FileService {
     private final Path uploadDir;
 
-    public FileService(@Value("${file.upload-dir}") String uploadDirPath){
+    public FileService(@Value("${file.upload-dir}") String uploadDirPath) {
         this.uploadDir = Paths.get(uploadDirPath).toAbsolutePath().normalize();
-
-        try{
+        try {
             Files.createDirectories(this.uploadDir);
-        }catch(IOException e){
+        } catch (IOException e) {
             throw new RuntimeException("Could not create upload directory", e);
         }
     }
 
-    public String saveFile(MultipartFile file){
-        if(file.isEmpty()){
+    public String saveFile(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
             return null;
         }
-
-        String originalFilename  = file.getOriginalFilename();
-
+        String originalFilename = file.getOriginalFilename();
         String extension = "";
-
-        if(originalFilename != null && originalFilename.contains(".")){
+        if (originalFilename != null && originalFilename.contains(".")) {
             extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         }
-
         String uniqueFilename = UUID.randomUUID().toString() + extension;
-
         try {
             Path targetPath = uploadDir.resolve(uniqueFilename);
             Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
             return "uploads/" + uniqueFilename;
-        } catch (IOException e){
-            throw new RuntimeException("Failed to save files :"+  originalFilename, e);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save file: " + originalFilename, e);
         }
     }
 
-    public  Path loadFile(String filename){
+    public Path loadFile(String filename) {
         return uploadDir.resolve(filename).normalize();
     }
 
-
+    public void deleteFile(String imagePath) {
+        if (imagePath == null || imagePath.isBlank()) {
+            return;
+        }
+        try {
+            // imagePath format: "uploads/uniqueFilename.jpg"
+            // Extract just the filename
+            String filename = Paths.get(imagePath).getFileName().toString();
+            Path fileToDelete = uploadDir.resolve(filename);
+            Files.deleteIfExists(fileToDelete);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to delete image: " + imagePath, e);
+        }
+    }
 }

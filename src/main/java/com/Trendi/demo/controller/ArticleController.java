@@ -39,9 +39,9 @@ public class ArticleController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ArticleResponse> createArticle(@RequestHeader("article") @Valid ArticleRequest request, @RequestPart(value = "image", required = false) MultipartFile image, @RequestPart("Authorization") String authHeader){
+    public ResponseEntity<ArticleResponse> createArticle(@RequestPart("article") @Valid ArticleRequest request, @RequestPart(value = "image", required = false) MultipartFile image, @RequestHeader("Authorization") String authHeader){
 
-        Long userId = jwtUtil.getUserIdFromToken(authHeader);
+        Long userId = getUserIdFromHeader(authHeader);
 
         String imagePath = (image != null && !image.isEmpty()) ? fileService.saveFile(image) : null;
 
@@ -50,15 +50,20 @@ public class ArticleController {
 
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ArticleResponse> updateArticle( @PathVariable Long id, @Valid @RequestBody ArticleRequest request, @RequestHeader("Authorization") String authHeader){
-        Long userId = jwtUtil.getUserIdFromToken(authHeader);
-        return ResponseEntity.ok(articleService.updateArticle(id, request, userId));
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ArticleResponse> updateArticle(
+            @PathVariable Long id,
+            @RequestPart("article") @Valid ArticleRequest request,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @RequestHeader("Authorization") String authHeader) {
+        Long userId = getUserIdFromHeader(authHeader);
+        String imagePath = (image != null && !image.isEmpty()) ? fileService.saveFile(image) : null;
+        return ResponseEntity.ok(articleService.updateArticle(id, request, userId, imagePath));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteArticle(@PathVariable Long id, @RequestHeader("Authorization") String authHeader ){
-        Long userId = jwtUtil.getUserIdFromToken(authHeader);
+        Long userId = getUserIdFromHeader(authHeader);
 
         articleService.deleteArticle(id, userId);
 
@@ -66,7 +71,7 @@ public class ArticleController {
     }
 
     private Long getUserIdFromHeader(String authHeader){
-        String token = authHeader.substring(7);
+        String token = authHeader.substring(7).trim();
         return jwtUtil.getUserIdFromToken(token);
     }
 }
