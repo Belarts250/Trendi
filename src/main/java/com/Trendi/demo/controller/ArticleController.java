@@ -50,5 +50,11 @@ public class ArticleController {
 
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ArticleResponse> updateArticle( @PathVariable Long id, @Valid @RequestBody ArticleRequest request, @RequestHeader("Authorization") String authHeader){
+        Long userId = jwtUtil.getUserIdFromToken(authHeader);
+        return ResponseEntity.ok(articleService.updateArticle(id, request, userId));
+    }
+
 
 }
