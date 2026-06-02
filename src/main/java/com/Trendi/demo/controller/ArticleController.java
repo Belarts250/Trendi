@@ -8,6 +8,7 @@ import com.Trendi.demo.service.FileService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,9 +38,10 @@ public class ArticleController {
         return ResponseEntity.ok(articleService.getArticleById(id));
     }
 
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ArticleResponse> createArticle(@RequestPart("article") @Valid ArticleRequest request, @RequestPart(value = "image", required = false) MultipartFile image, @RequestPart("Authorization") String authHeader){
 
-        Long userId = getUserFromHeader(authHeader);
+        Long userId = jwtUtil.getUserIdFromToken(authHeader);
 
         String imagePath = (image != null && !image.isEmpty()) ? fileService.saveFile(image) : null;
 
