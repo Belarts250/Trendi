@@ -1,15 +1,16 @@
 package com.Trendi.demo.controller;
 
 import com.Trendi.demo.config.JwtUtil;
+import com.Trendi.demo.dto.ArticleRequest;
 import com.Trendi.demo.dto.ArticleResponse;
 import com.Trendi.demo.service.ArticleService;
 import com.Trendi.demo.service.FileService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -26,13 +27,25 @@ public class ArticleController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @GetMapping
     public ResponseEntity<List<ArticleResponse>> getAllArticles(){
         return ResponseEntity.ok(articleService.getAllArticles());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ArticleResponse> getArticleById(@PathVariable Long id){
+    public ResponseEntity<ArticleResponse> getArticle(@PathVariable Long id){
         return ResponseEntity.ok(articleService.getArticleById(id));
+    }
+
+    public ResponseEntity<ArticleResponse> createArticle(@RequestPart("article") @Valid ArticleRequest request, @RequestPart(value = "image", required = false) MultipartFile image, @RequestPart("Authorization") String authHeader){
+
+        Long userId = getUserFromHeader(authHeader);
+
+        String imagePath = (image != null && !image.isEmpty()) ? fileService.saveFile(image) : null;
+
+        ArticleResponse response = articleService.createArticle(request, userId, imagePath);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+
     }
 
 
