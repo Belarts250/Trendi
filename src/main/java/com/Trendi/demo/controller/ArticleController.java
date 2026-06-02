@@ -64,4 +64,9 @@ public class ArticleController {
 
         return  ResponseEntity.noContent().build();
     }
+
+    private Long getUserIdFromHeader(String authHeader){
+        String token = authHeader.substring(7);
+        return jwtUtil.getUserIdFromToken(token);
+    }
 }
