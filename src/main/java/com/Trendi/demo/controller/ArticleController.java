@@ -39,7 +39,7 @@ public class ArticleController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ArticleResponse> createArticle(@RequestPart("article") @Valid ArticleRequest request, @RequestPart(value = "image", required = false) MultipartFile image, @RequestPart("Authorization") String authHeader){
+    public ResponseEntity<ArticleResponse> createArticle(@RequestHeader("article") @Valid ArticleRequest request, @RequestPart(value = "image", required = false) MultipartFile image, @RequestPart("Authorization") String authHeader){
 
         Long userId = jwtUtil.getUserIdFromToken(authHeader);
 
@@ -56,5 +56,12 @@ public class ArticleController {
         return ResponseEntity.ok(articleService.updateArticle(id, request, userId));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteArticle(@PathVariable Long id, @RequestHeader("Authorization") String authHeader ){
+        Long userId = jwtUtil.getUserIdFromToken(authHeader);
 
+        articleService.deleteArticle(id, userId);
+
+        return  ResponseEntity.noContent().build();
+    }
 }

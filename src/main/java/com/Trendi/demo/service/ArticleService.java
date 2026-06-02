@@ -69,7 +69,7 @@ public class ArticleService {
     }
 
 
-    public void deleteArticle(Long articleId, ArticleRequest request, Long userId){
+    public void deleteArticle(Long articleId, Long userId){
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Article not found" + articleId));
 
