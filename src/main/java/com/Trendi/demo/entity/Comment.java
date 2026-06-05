@@ -4,30 +4,32 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
 @Data
-@Table(name = "articles")
+@Table(name = "comments")
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Article {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 200)
-    private String title;
-
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String content;
+    private String text;
 
-    private String imagePath;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "article_id", nullable = false)
+    private Article article;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User author;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -35,22 +37,14 @@ public class Article {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User author;
-
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Comment> comments;
-
-
     @PrePersist
     protected void onCreate(){
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
+    @PreUpdate
     protected void onUpdate(){
         this.updatedAt = LocalDateTime.now();
     }
-
 }

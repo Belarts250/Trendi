@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class ArticleService {
@@ -44,11 +46,9 @@ public class ArticleService {
         return ArticleMapper.toResponse(saved);
     }
 
-    public List<ArticleResponse> getAllArticles(){
-        return articleRepository.findAll()
-                .stream()
-                .map(ArticleMapper::toResponse)
-                .collect(Collectors.toList());
+    public Page<ArticleResponse> getAllArticles(Pageable pageable){
+        return articleRepository.findAll(pageable)
+                .map(ArticleMapper::toResponse);
     }
 
     public ArticleResponse getArticleById(Long id){
@@ -70,9 +70,8 @@ public class ArticleService {
         article.setContent(request.getContent());
 
         if (newImage != null) {
-            // Delete old image if it exists
             if (article.getImagePath() != null) {
-                fileService.deleteFile(article.getImagePath()); // implement this in FileService
+                fileService.deleteFile(article.getImagePath());
             }
             article.setImagePath(newImage);
         }

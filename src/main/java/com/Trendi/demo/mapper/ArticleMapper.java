@@ -5,6 +5,8 @@ import com.Trendi.demo.dto.ArticleResponse;
 import com.Trendi.demo.entity.Article;
 import lombok.Builder;
 
+import java.util.stream.Collectors;
+
 @Builder
     public class ArticleMapper {
 
@@ -22,6 +24,10 @@ import lombok.Builder;
                     .authorId(article.getAuthor() != null ? article.getAuthor().getId() : null)
                     .createdAt(article.getCreatedAt())
                     .updatedAt(article.getUpdatedAt())
+                    .comments(article.getComments() != null ? 
+                            article.getComments().stream()
+                                    .map(CommentMapper::toResponse)
+                                    .collect(Collectors.toList()) : null)
                     .build();
         }
 }

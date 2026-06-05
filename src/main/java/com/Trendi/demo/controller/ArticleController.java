@@ -14,7 +14,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
+//@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("api/articles")
 public class ArticleController {
@@ -29,8 +34,15 @@ public class ArticleController {
     private JwtUtil jwtUtil;
 
     @GetMapping
-    public ResponseEntity<List<ArticleResponse>> getAllArticles(){
-        return ResponseEntity.ok(articleService.getAllArticles());
+    public ResponseEntity<Page<ArticleResponse>> getAllArticles(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir
+    ){
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return ResponseEntity.ok(articleService.getAllArticles(pageable));
     }
 
     @GetMapping("/{id}")

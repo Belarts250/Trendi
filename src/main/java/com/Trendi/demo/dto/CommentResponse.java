@@ -6,21 +6,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
 
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArticleResponse {
+public class CommentResponse {
     private Long id;
-    private String title;
-    private String content;
-    private String imagePath;
+    private String text;
     private String authorName;
     private Long authorId;
+    private Long articleId;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private List<CommentResponse> comments;
 }
