@@ -69,7 +69,7 @@ public class JwtUtil {
     }
 
     /**
-     * Helper method to parse and verify the token.tok
+     * Helper method to parse and verify the token.
      */
     private Claims parseClaims(String token) {
         return Jwts.parser()
