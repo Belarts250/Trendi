@@ -23,7 +23,7 @@ public class JwtUtil {
         this.expiration = expiration;
     }
 
-    /** genera
+    /** gener
      * GENERATE a JWT token for a user.
      * @param email - the user's email (subject of the token)
      * @param userId - stored as a claim
