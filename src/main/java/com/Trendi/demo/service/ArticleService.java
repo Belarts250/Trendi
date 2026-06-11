@@ -95,6 +95,25 @@ public class ArticleService {
     public List<ArticleResponse> getArticlesByUser(Long userId){
         return articleRepository.findByAuthorId(userId)
                 .stream()
-                .map(ArticleMapper::toResponse)
-                .collect(Collectors.toList());    }
+                .map(com.Trendi.demo.mapper.ArticleMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    // Example of using Derived Query with Pagination
+    public Page<ArticleResponse> searchArticlesByTitle(String keyword, Pageable pageable) {
+        return articleRepository.findByTitleContainingIgnoreCase(keyword, pageable)
+                .map(com.Trendi.demo.mapper.ArticleMapper::toResponse);
+    }
+
+    // Example of using JPQL with Pagination
+    public Page<ArticleResponse> getArticlesByAuthorIdPaginated(Long authorId, Pageable pageable) {
+        return articleRepository.findArticlesByAuthorIdWithJPQL(authorId, pageable)
+                .map(com.Trendi.demo.mapper.ArticleMapper::toResponse);
+    }
+
+    // Example of using Native Query with Pagination
+    public Page<ArticleResponse> getRecentArticlesPaginated(java.time.LocalDateTime startDate, Pageable pageable) {
+        return articleRepository.findRecentArticlesNative(startDate, pageable)
+                .map(com.Trendi.demo.mapper.ArticleMapper::toResponse);
+    }
 }

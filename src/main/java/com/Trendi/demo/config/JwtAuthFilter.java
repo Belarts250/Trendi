@@ -31,28 +31,32 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // --- CRITICAL: Allow CORS preflight requests without authentication ---
+        // 1. Allow preflight OPTIONS requests
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Get Authorization header
+        // 2. Allow public endpoints without token validation
+        String requestUri = request.getRequestURI();
+        if (isPublicEndpoint(requestUri)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // 3. Get Authorization header
         String authHeader = request.getHeader("Authorization");
 
-        // No token -> continue (public endpoints will be handled by SecurityConfig)
+        // No token -> continue (SecurityConfig will reject if required)
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Extract token
+        // 4. Extract and validate token
         String token = authHeader.substring(7).trim();
-
-        // Extract email from token
         String email = jwtUtil.getEmailFromToken(token);
 
-        // If email exists and user not already authenticated
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             var userDetails = userDetailsService.loadUserByUsername(email);
 
@@ -66,7 +70,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         }
 
-        // Continue filter chain
+        // 5. Continue filter chain
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isPublicEndpoint(String uri) {
+        return uri.startsWith("/api/auth/") ||
+                uri.startsWith("/uploads/") ||
+                uri.startsWith("/api/files/") ||
+                uri.equals("/api/contact") ||
+                uri.startsWith("/api/articles") ||
+                uri.startsWith("/articles"); // if you have direct /articles endpoints
     }
 }

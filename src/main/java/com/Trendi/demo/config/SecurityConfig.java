@@ -34,29 +34,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Enable CORS with custom configuration
+                // CORS configuration (defined below)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                // Disable CSRF for stateless API
+                // Disable CSRF for stateless APIs
                 .csrf(csrf -> csrf.disable())
-                // Stateless session management
+                // Stateless session
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // Authorization rules
                 .authorizeHttpRequests(auth -> auth
-                        // Allow preflight OPTIONS requests (required for CORS)
+                        // Allow preflight OPTIONS requests
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // Public endpoints
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/files/**").permitAll()
-                        // Allow fetching articles (matches your frontend call)
-                        .requestMatchers("/articles").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()   // <-- key line for images
                         .requestMatchers("/api/articles").permitAll()
-                        .requestMatchers("/api/articles/{id}").permitAll()
-                        // ** ADD THIS LINE – allow contact form submission without authentication **
+                        .requestMatchers("/api/articles/**").permitAll()
                         .requestMatchers("/api/contact").permitAll()
                         // Everything else requires authentication
                         .anyRequest().authenticated())
-                // Add JWT filter before default authentication
+                // Add JWT filter before default auth
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -65,15 +63,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Allow your Next.js frontend origin
         configuration.setAllowedOrigins(List.of("http://localhost:3000"));
-        // Allow all necessary HTTP methods (including OPTIONS)
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        // Allow all headers
         configuration.setAllowedHeaders(List.of("*"));
-        // Allow credentials (e.g., Authorization header)
         configuration.setAllowCredentials(true);
-        // Apply to all endpoints
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
