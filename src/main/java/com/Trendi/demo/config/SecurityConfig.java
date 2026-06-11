@@ -52,6 +52,8 @@ public class SecurityConfig {
                         .requestMatchers("/articles").permitAll()
                         .requestMatchers("/api/articles").permitAll()
                         .requestMatchers("/api/articles/{id}").permitAll()
+                        // ** ADD THIS LINE – allow contact form submission without authentication **
+                        .requestMatchers("/api/contact").permitAll()
                         // Everything else requires authentication
                         .anyRequest().authenticated())
                 // Add JWT filter before default authentication
