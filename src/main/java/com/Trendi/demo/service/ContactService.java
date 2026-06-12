@@ -6,8 +6,12 @@ import com.Trendi.demo.repository.ContactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -46,8 +50,22 @@ public class ContactService {
         return contact;
     }
 
+    private ScheduledExecutorService scheduler;
+
+    @PostConstruct
+    public void init() {
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.scheduleWithFixedDelay(this::sendPendingContactEmails, 10, 10, TimeUnit.MINUTES);
+    }
+
+    @PreDestroy
+    public void destroy() {
+        if (scheduler != null) {
+            scheduler.shutdown();
+        }
+    }
+
     // Scheduled task: runs every 10 minutes to process any unsent emails
-    @Scheduled(fixedDelay = 600000) // 10 minutes in milliseconds
     public void sendPendingContactEmails() {
         List<Contact> pendingContacts = contactRepository.findBySentFalse();
 
