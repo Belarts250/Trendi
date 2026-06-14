@@ -50,7 +50,7 @@ public class ArticleServiceTest {
         mockArticle.setContent("Test Content");
         mockArticle.setAuthor(mockUser);
     }
-//testing files
+//testing
     @Test
     void testCreateArticle() {
         ArticleRequest request = new ArticleRequest();
